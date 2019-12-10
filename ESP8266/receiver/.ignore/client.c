@@ -60,12 +60,12 @@ void ICACHE_FLASH_ATTR user_tcp_recv_cb(void *arg,
 void ICACHE_FLASH_ATTR user_tcp_recon_cb(void *arg, sint8 err)//重新连接回调函数
 {
 	os_printf("user_tcp_recon_cb->连接错误，错误代码为%d\r\n",err);
-	// struct ip_info ipconfig;//定义结构体指针
-	//   wifi_get_ip_info(STATION_IF,&ipconfig);//获取本地的ip地址
-	// os_printf("#现在 local_ip:" IPSTR ",local_gw:" IPSTR  ",remote_netmask:" IPSTR,
-	// 			IP2STR(&ipconfig.ip), IP2STR(&ipconfig.gw),
-	// 			IP2STR(&ipconfig.netmask));
-	// os_timer_disarm(&connect_timer);// 未连接上无需发送心跳包
+	struct ip_info ipconfig;//定义结构体指针
+	  wifi_get_ip_info(STATION_IF,&ipconfig);//获取本地的ip地址
+	os_printf("#现在 local_ip:" IPSTR ",local_gw:" IPSTR  ",remote_netmask:" IPSTR,
+				IP2STR(&ipconfig.ip), IP2STR(&ipconfig.gw),
+				IP2STR(&ipconfig.netmask));
+	os_timer_disarm(&connect_timer);// 未连接上无需发送心跳包
 
 	espconn_connect((struct espconn *)arg);
 }

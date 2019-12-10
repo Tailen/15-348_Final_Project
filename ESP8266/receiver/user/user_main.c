@@ -72,7 +72,7 @@ void ICACHE_FLASH_ATTR
 user_init(void)
 {
     uart_init(115200, 115200); // set uart baud rate
-    wifi_set_opmode(STATIONAP_MODE); // set mode to softAP+station mode
+    wifi_set_opmode(SOFTAP_MODE); // set mode to softAP mode
     os_delay_ms(10); // wait for initial settings to finish
 
     // Event handler callbacks
@@ -104,6 +104,16 @@ config_ap_and_sta_cb(void)
     /* Establish a TCP server for http(with JSON) POST or GET command
        to communicate with sender device. */
     user_webserver_init(SERVER_PORT);
+}
+
+/*
+ * Configure GPIO 0 and 2
+ */
+void ICACHE_FLASH_ATTR
+user_GPIO_init(void)
+{
+
+    return;
 }
 
 /*

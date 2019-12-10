@@ -4,9 +4,10 @@
  * Created on: 5 Dec 2019
  * Author: Hao Mei
  * 
- * HTTP server that sends and receives POST commands
+ * HTTP server that sends and receives POST requests
  * (Modified from Espressif NONOS SDK IoT_Demo example)
  */
+
 #include "stdlib.h"
 
 #include "ets_sys.h"
@@ -208,6 +209,7 @@ data_send(void *arg, bool responseOK, char *psend)
     struct espconn *ptrespconn = arg;
     os_memset(httphead, 0, 256);
 
+    // Receive confirmation
     if (responseOK) {
         os_sprintf(httphead,
                    "HTTP/1.0 200 OK\r\nContent-Length: %d\r\nServer: lwIP/1.4.0\r\n",
@@ -225,24 +227,14 @@ data_send(void *arg, bool responseOK, char *psend)
             length = os_strlen(httphead);
         }
     } else {
-        os_sprintf(httphead, "HTTP/1.0 400 BadRequest\r\n\
-Content-Length: 0\r\nServer: lwIP/1.4.0\r\n\n");
+        os_sprintf(httphead, "HTTP/1.0 400 BadRequest\r\nContent-Length: 0\r\nServer: lwIP/1.4.0\r\n\n");
         length = os_strlen(httphead);
     }
 
-    if (psend) {
-#ifdef SERVER_SSL_ENABLE
-        espconn_secure_sent(ptrespconn, pbuf, length);
-#else
+    if (psend)
         espconn_sent(ptrespconn, pbuf, length);
-#endif
-    } else {
-#ifdef SERVER_SSL_ENABLE
-        espconn_secure_sent(ptrespconn, httphead, length);
-#else
+    else
         espconn_sent(ptrespconn, httphead, length);
-#endif
-    }
 
     if (pbuf) {
         os_free(pbuf);
@@ -310,18 +302,21 @@ webserver_recv(void *arg, char *pusrdata, unsigned short length)
                 if (os_strcmp(pURL_Frame->pFilename, "c1") == 0) {
 
                     /* #################################### Command 1 #################################### */
+                    os_printf("Received command c1\n");
 
                     response_send(ptrespconn, true);
                 }
                 else if (os_strcmp(pURL_Frame->pFilename, "c2") == 0) {
                     
                     /* #################################### Command 2 #################################### */
+                    os_printf("Received command c2\n");
 
                     response_send(ptrespconn, true);
                 }
                 else if (os_strcmp(pURL_Frame->pFilename, "c3") == 0) {
                     
                     /* #################################### Command 3 #################################### */
+                    os_printf("Received command c3\n");
 
                     response_send(ptrespconn, true);
                 }
@@ -391,6 +386,7 @@ webserver_listen(void *arg)
 {
     struct espconn *pesp_conn = arg;
 
+    os_printf("Accepted connection from device, listening...\n");
     espconn_regist_recvcb(pesp_conn, webserver_recv);
     espconn_regist_reconcb(pesp_conn, webserver_recon);
     espconn_regist_disconcb(pesp_conn, webserver_discon);
@@ -414,5 +410,6 @@ user_webserver_init(uint32 port)
     esp_conn.proto.tcp->local_port = port;
     espconn_regist_connectcb(&esp_conn, webserver_listen);
 
+    os_printf("HTTP server waiting for connections\n");
     espconn_accept(&esp_conn);
 }
