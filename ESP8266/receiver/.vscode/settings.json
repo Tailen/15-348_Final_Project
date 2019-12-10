@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "user_interface.h": "c",
+        "client.h": "c",
+        "mem.h": "c",
+        "espconn.h": "c",
+        "eagle_soc.h": "c"
+    },
+    "C_Cpp.dimInactiveRegions": true
+}
