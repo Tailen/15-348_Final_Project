@@ -12,6 +12,9 @@
     #define SPI_FLASH_SIZE_MAP 2
 #endif
 
+const uint8 remote_ip[4] = {192,168,4,1};
+const int remote_connect_port = 80;
+
 #if ((SPI_FLASH_SIZE_MAP == 0) || (SPI_FLASH_SIZE_MAP == 1))
 #error "The flash map is not supported"
 #elif (SPI_FLASH_SIZE_MAP == 2)
@@ -72,7 +75,7 @@ void ICACHE_FLASH_ATTR
 user_init(void)
 {
     uart_init(115200, 115200); // set uart baud rate
-    wifi_set_opmode(STATIONAP_MODE); // set mode to softAP+station mode
+    wifi_set_opmode(STATION_MODE); // set mode to station mode
     os_delay_ms(10); // wait for initial settings to finish
 
     // Event handler callbacks
@@ -190,8 +193,7 @@ check_ap_connected(void *arg)
     { 
         os_printf("Successful connection to access point!!!\r\n");
         // ################## Operation logic entry point ##################
-        // ################## my_station_init((struct ip_addr *)remote_ip, &ipconfig.ip, remote_connect_port); ##################
-        while (1) {}
+        my_station_init((struct ip_addr *)remote_ip, &ipconfig.ip, remote_connect_port);
 	}
     // Connection failed
     else if (status == STATION_WRONG_PASSWORD

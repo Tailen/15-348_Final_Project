@@ -16,4 +16,4 @@
  ../../driver_lib/include/driver/uart.h \
  ../../driver_lib/include/driver/uart_register.h \
  ../../include/eagle_soc.h ../../include/c_types.h \
- ../include/user_config.h
+ ../../include/ip_addr.h ../include/user_config.h

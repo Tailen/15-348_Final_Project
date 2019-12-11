@@ -12,6 +12,7 @@
 #include "osapi.h"
 #include "user_interface.h"
 #include "driver/uart.h"
+#include "ip_addr.h"
 
 // #include "client.h"
 #include "user_config.h"

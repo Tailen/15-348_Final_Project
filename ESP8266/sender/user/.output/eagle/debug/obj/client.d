@@ -1,5 +1,4 @@
-.output/eagle/debug/obj/client.o .output/eagle/debug/obj/client.d : client.c ../include/client.h ../../include/espconn.h \
- ../../include/mem.h \
+.output/eagle/debug/obj/client.o .output/eagle/debug/obj/client.d : client.c ../include/client.h ../../include/mem.h \
  /opt/xtensa-lx106-elf/lib/gcc/xtensa-lx106-elf/4.8.2/include/stddef.h \
  ../../include/c_types.h ../../include/osapi.h \
  /opt/xtensa-lx106-elf/lib/gcc/xtensa-lx106-elf/4.8.2/include/string.h \
@@ -16,4 +15,4 @@
  ../../driver_lib/include/driver/uart.h \
  ../../driver_lib/include/driver/uart_register.h \
  ../../include/eagle_soc.h ../../include/c_types.h \
- ../../include/ets_sys.h
+ ../../include/ets_sys.h ../../include/ip_addr.h ../../include/espconn.h

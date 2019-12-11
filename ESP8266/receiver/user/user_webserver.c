@@ -272,7 +272,7 @@ webserver_recv(void *arg, char *pusrdata, unsigned short length)
     bool parse_flag = false;
     struct espconn *ptrespconn = arg;
 
-    os_printf("len: %u\n", length);
+    os_printf("\nHeader length: %u\n", length);
     if (check_data(pusrdata, length) == false)
     {
         os_printf("Data check failed, goto jump\n");
@@ -290,13 +290,13 @@ webserver_recv(void *arg, char *pusrdata, unsigned short length)
     switch (pURL_Frame->Type)
     {
         case GET:
-            os_printf("We have a GET request.\n");
+            os_printf("GET request.\n");
             break;
 
         case POST:
-            os_printf("We have a POST request.\n");
+            os_printf("POST request.\n");
 
-            if (os_strcmp(pURL_Frame->pSelect, "config") == 0 &&
+            if (os_strcmp(pURL_Frame->pSelect, "client") == 0 &&
                 os_strcmp(pURL_Frame->pCommand, "command") == 0) {
 
                 if (os_strcmp(pURL_Frame->pFilename, "c1") == 0) {
@@ -354,7 +354,7 @@ void webserver_recon(void *arg, sint8 err)
 {
     struct espconn *pesp_conn = arg;
 
-    os_printf("webserver's %d.%d.%d.%d:%d err %d reconnect\n", pesp_conn->proto.tcp->remote_ip[0],
+    os_printf("%d.%d.%d.%d:%d err %d reconnected\n", pesp_conn->proto.tcp->remote_ip[0],
     		pesp_conn->proto.tcp->remote_ip[1],pesp_conn->proto.tcp->remote_ip[2],
     		pesp_conn->proto.tcp->remote_ip[3],pesp_conn->proto.tcp->remote_port, err);
 }
@@ -370,7 +370,7 @@ void webserver_discon(void *arg)
 {
     struct espconn *pesp_conn = arg;
 
-    os_printf("webserver's %d.%d.%d.%d:%d disconnect\n", pesp_conn->proto.tcp->remote_ip[0],
+    os_printf("%d.%d.%d.%d:%d disconnected\n", pesp_conn->proto.tcp->remote_ip[0],
         		pesp_conn->proto.tcp->remote_ip[1],pesp_conn->proto.tcp->remote_ip[2],
         		pesp_conn->proto.tcp->remote_ip[3],pesp_conn->proto.tcp->remote_port);
 }
