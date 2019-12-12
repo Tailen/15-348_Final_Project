@@ -19,10 +19,13 @@
 
 void os_delay_ms(uint16 ms);
 void ICACHE_FLASH_ATTR config_ap_and_sta_cb(void);
+void ICACHE_FLASH_ATTR user_GPIO_init(void);
+void ICACHE_FLASH_ATTR check_command(void);
 void ICACHE_FLASH_ATTR wifi_event_handler_cb(System_Event_t *event);
 void ICACHE_FLASH_ATTR connect_ap(void *arg, STATUS status);
 void ICACHE_FLASH_ATTR check_ap_connected(void *arg);
 
 os_timer_t ap_connect_timer; // A software timer, less accurate than HW timer
+os_timer_t gpio_check_timer;
 
 #endif /* __INCLUDE_USER_MAIN_H__ */

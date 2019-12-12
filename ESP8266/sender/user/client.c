@@ -9,7 +9,8 @@
 
 #include "client.h"
 
-struct espconn user_tcp_conn;
+extern struct espconn user_tcp_conn;
+extern uint8 current_command;
 
 void ICACHE_FLASH_ATTR
 user_tcp_sent_cb(void *arg)
@@ -49,7 +50,21 @@ user_tcp_connect_cb(void *arg)
 	espconn_regist_disconcb(pespconn, user_tcp_discon_cb);
 
 	// Send command
-	os_sprintf(request_buf, post_header, "c1");
+	switch (current_command)
+	{
+	case 0:
+		os_sprintf(request_buf, post_header, "c0");
+		break;
+	case 1:
+		os_sprintf(request_buf, post_header, "c1");
+		break;
+	case 2:
+		os_sprintf(request_buf, post_header, "c2");
+		break;
+	case 3:
+		os_sprintf(request_buf, post_header, "c3");
+		break;
+	}
 	espconn_sent(pespconn, request_buf, os_strlen(request_buf));
 }
 
@@ -67,7 +82,4 @@ my_station_init(struct ip_addr *remote_ip, struct ip_addr *local_ip, int remote_
 	// Register connect and reconnect callbacks
 	espconn_regist_connectcb(&user_tcp_conn, user_tcp_connect_cb);
 	espconn_regist_reconcb(&user_tcp_conn, user_tcp_recon_cb);
-
-	// Start connection
-	espconn_connect(&user_tcp_conn);
 }

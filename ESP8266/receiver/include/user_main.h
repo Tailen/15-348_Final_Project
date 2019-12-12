@@ -24,5 +24,6 @@ void ICACHE_FLASH_ATTR user_webserver_init(uint32 port);
 void ICACHE_FLASH_ATTR wifi_event_handler_cb(System_Event_t *event);
 
 os_timer_t ap_connect_timer; // A software timer, less accurate than HW timer
+os_timer_t gpio_check_timer;
 
 #endif /* __INCLUDE_USER_MAIN_H__ */

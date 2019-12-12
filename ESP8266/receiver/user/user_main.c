@@ -101,19 +101,26 @@ config_ap_and_sta_cb(void)
 
     // Initialize GPIO connection to TM4C
     user_GPIO_init();
-    /* Establish a TCP server for http(with JSON) POST or GET command
+    /* Establish a TCP server for http POST command
        to communicate with sender device. */
     user_webserver_init(SERVER_PORT);
 }
 
 /*
- * Configure GPIO 0 and 2
+ * Configure GPIO 0 and 2 to output mode
  */
 void ICACHE_FLASH_ATTR
 user_GPIO_init(void)
 {
-
-    return;
+    // Enable GPIO 0 and 2
+    PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0);
+    PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO2_U, FUNC_GPIO2);
+    // Disable pullup resisters
+    PIN_PULLUP_DIS(PERIPHS_IO_MUX_GPIO0_U);
+    PIN_PULLUP_DIS(PERIPHS_IO_MUX_GPIO2_U);
+    // Set default output to be NONE
+    GPIO_OUTPUT_SET(GPIO_ID_PIN(0), 0);
+    GPIO_OUTPUT_SET(GPIO_ID_PIN(2), 0);
 }
 
 /*

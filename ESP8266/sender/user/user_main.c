@@ -14,6 +14,9 @@
 
 const uint8 remote_ip[4] = {192,168,4,1};
 const int remote_connect_port = 80;
+struct espconn user_tcp_conn;
+uint8 last_command = 0;
+uint8 current_command = 0;
 
 #if ((SPI_FLASH_SIZE_MAP == 0) || (SPI_FLASH_SIZE_MAP == 1))
 #error "The flash map is not supported"
@@ -194,6 +197,13 @@ check_ap_connected(void *arg)
         os_printf("Successful connection to access point!!!\r\n");
         // ################## Operation logic entry point ##################
         my_station_init((struct ip_addr *)remote_ip, &ipconfig.ip, remote_connect_port);
+        // Proceed to initialize GPIO interface with TM4C
+        user_GPIO_init();
+        // Check input from TM4C every 500ms, send to server when input change
+        os_timer_disarm(&gpio_check_timer);
+        os_timer_setfn(&gpio_check_timer, 
+                       (os_timer_func_t *)check_command, NULL);
+        os_timer_arm(&gpio_check_timer, 500, 0);
 	}
     // Connection failed
     else if (status == STATION_WRONG_PASSWORD
@@ -235,6 +245,44 @@ check_ap_connected(void *arg)
             os_timer_arm(&ap_connect_timer, 100, 0);
         }
     }
+}
+
+/*
+ * Configure GPIO 0 and 2 to input mode
+ */
+void ICACHE_FLASH_ATTR
+user_GPIO_init(void)
+{
+    // Enable GPIO 0 and 2
+    PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0);
+    PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO2_U, FUNC_GPIO2);
+    // Disable output
+    GPIO_DIS_OUTPUT(GPIO_ID_PIN(0));
+    GPIO_DIS_OUTPUT(GPIO_ID_PIN(2));
+    // Disable pullup resisters
+    PIN_PULLUP_DIS(PERIPHS_IO_MUX_GPIO0_U);
+    PIN_PULLUP_DIS(PERIPHS_IO_MUX_GPIO2_U);
+}
+
+/*
+ * Check GPIO, do HTTP post request to server when input command changed
+ */
+void ICACHE_FLASH_ATTR
+check_command(void)
+{
+    // Send post request to server if input command changed
+    last_command = current_command;
+    current_command = GPIO_INPUT_GET(GPIO_ID_PIN(0)) & 
+                     (GPIO_INPUT_GET(GPIO_ID_PIN(2)) << 1);
+    if (current_command != last_command && current_command != 0)
+    {
+        // Start connection
+	    espconn_connect(&user_tcp_conn);
+    }
+    // Setup timer for next check
+    os_timer_setfn(&gpio_check_timer, 
+                   (os_timer_func_t *)check_command, NULL);
+    os_timer_arm(&gpio_check_timer, 500, 0);
 }
 
 /*

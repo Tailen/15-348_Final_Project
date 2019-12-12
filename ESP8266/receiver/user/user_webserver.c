@@ -303,21 +303,24 @@ webserver_recv(void *arg, char *pusrdata, unsigned short length)
 
                     /* #################################### Command 1 #################################### */
                     os_printf("Received command c1\n");
-
+                    GPIO_OUTPUT_SET(GPIO_ID_PIN(0), 1);
+                    GPIO_OUTPUT_SET(GPIO_ID_PIN(2), 0);
                     response_send(ptrespconn, true);
                 }
                 else if (os_strcmp(pURL_Frame->pFilename, "c2") == 0) {
                     
                     /* #################################### Command 2 #################################### */
                     os_printf("Received command c2\n");
-
+                    GPIO_OUTPUT_SET(GPIO_ID_PIN(0), 0);
+                    GPIO_OUTPUT_SET(GPIO_ID_PIN(2), 1);
                     response_send(ptrespconn, true);
                 }
                 else if (os_strcmp(pURL_Frame->pFilename, "c3") == 0) {
                     
                     /* #################################### Command 3 #################################### */
                     os_printf("Received command c3\n");
-
+                    GPIO_OUTPUT_SET(GPIO_ID_PIN(0), 1);
+                    GPIO_OUTPUT_SET(GPIO_ID_PIN(2), 1);
                     response_send(ptrespconn, true);
                 }
                 else {
