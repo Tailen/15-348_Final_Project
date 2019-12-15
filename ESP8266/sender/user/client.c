@@ -9,13 +9,16 @@
 
 #include "client.h"
 
-extern struct espconn user_tcp_conn;
-extern uint8 current_command;
+struct espconn user_tcp_conn;
+extern uint32 current_command;
 
 void ICACHE_FLASH_ATTR
 user_tcp_sent_cb(void *arg)
 {
 	os_printf("TCP package sent successfully!\n");
+	// Disconnect from server
+	struct espconn *pespconn = arg;
+	espconn_disconnect(pespconn);
 }
 
 void ICACHE_FLASH_ATTR 
@@ -34,8 +37,6 @@ void ICACHE_FLASH_ATTR
 user_tcp_recon_cb(void *arg, sint8 err)
 {
 	os_printf("TCP reconnection callback, error code: %d\n", err);
-
-	espconn_connect((struct espconn *)arg);
 }
 
 void ICACHE_FLASH_ATTR
@@ -66,6 +67,7 @@ user_tcp_connect_cb(void *arg)
 		break;
 	}
 	espconn_sent(pespconn, request_buf, os_strlen(request_buf));
+	free(request_buf);
 }
 
 void ICACHE_FLASH_ATTR

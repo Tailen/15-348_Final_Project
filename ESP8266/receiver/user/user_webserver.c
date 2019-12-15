@@ -299,7 +299,15 @@ webserver_recv(void *arg, char *pusrdata, unsigned short length)
             if (os_strcmp(pURL_Frame->pSelect, "client") == 0 &&
                 os_strcmp(pURL_Frame->pCommand, "command") == 0) {
 
-                if (os_strcmp(pURL_Frame->pFilename, "c1") == 0) {
+                if (os_strcmp(pURL_Frame->pFilename, "c0") == 0) {
+
+                    /* #################################### No Command #################################### */
+                    os_printf("Received command c0\n");
+                    GPIO_OUTPUT_SET(GPIO_ID_PIN(0), 0);
+                    GPIO_OUTPUT_SET(GPIO_ID_PIN(2), 0);
+                    response_send(ptrespconn, true);
+                }
+                else if (os_strcmp(pURL_Frame->pFilename, "c1") == 0) {
 
                     /* #################################### Command 1 #################################### */
                     os_printf("Received command c1\n");

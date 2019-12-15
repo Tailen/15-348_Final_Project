@@ -14,9 +14,9 @@
 
 const uint8 remote_ip[4] = {192,168,4,1};
 const int remote_connect_port = 80;
-struct espconn user_tcp_conn;
-uint8 last_command = 0;
-uint8 current_command = 0;
+extern struct espconn user_tcp_conn;
+uint32 last_command = 3;
+uint32 current_command = 3;
 
 #if ((SPI_FLASH_SIZE_MAP == 0) || (SPI_FLASH_SIZE_MAP == 1))
 #error "The flash map is not supported"
@@ -203,7 +203,7 @@ check_ap_connected(void *arg)
         os_timer_disarm(&gpio_check_timer);
         os_timer_setfn(&gpio_check_timer, 
                        (os_timer_func_t *)check_command, NULL);
-        os_timer_arm(&gpio_check_timer, 500, 0);
+        os_timer_arm(&gpio_check_timer, 100, 1);
 	}
     // Connection failed
     else if (status == STATION_WRONG_PASSWORD
@@ -270,19 +270,21 @@ user_GPIO_init(void)
 void ICACHE_FLASH_ATTR
 check_command(void)
 {
+    uint32 gpio0, gpio2;
+
     // Send post request to server if input command changed
     last_command = current_command;
-    current_command = GPIO_INPUT_GET(GPIO_ID_PIN(0)) & 
-                     (GPIO_INPUT_GET(GPIO_ID_PIN(2)) << 1);
-    if (current_command != last_command && current_command != 0)
+    gpio0 = GPIO_INPUT_GET(GPIO_ID_PIN(0));
+    gpio2 = GPIO_INPUT_GET(GPIO_ID_PIN(2));
+    current_command = gpio0 | (gpio2 << 1);
+    // os_printf("GPIO0: %d, GPIO2: %d\n", gpio0, gpio2);
+    // os_printf("Current_command: %d, last_command: %d\n",
+    //           current_command, last_command);
+    if (current_command != last_command)
     {
         // Start connection
 	    espconn_connect(&user_tcp_conn);
     }
-    // Setup timer for next check
-    os_timer_setfn(&gpio_check_timer, 
-                   (os_timer_func_t *)check_command, NULL);
-    os_timer_arm(&gpio_check_timer, 500, 0);
 }
 
 /*

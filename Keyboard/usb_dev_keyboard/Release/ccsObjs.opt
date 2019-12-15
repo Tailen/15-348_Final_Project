@@ -1,0 +1,1 @@
+"./startup_ccs.obj" "./usb_dev_keyboard.obj" "./usb_keyb_structs.obj" "./drivers/buttons.obj" "./utils/uartstdio.obj" "../usb_dev_keyboard_ccs.cmd" -l"C:/driverlib/ccs/Debug/driverlib.lib" -l"C:/usblib/ccs/Debug/usblib.lib" -llibc.a 
